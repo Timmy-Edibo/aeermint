@@ -9,7 +9,7 @@ const nextConfig = {
       return [
         {
           source: '/', // Match the root path
-          destination: '/wallets', // Redirect to your entry route
+          destination: '/signin', // Redirect to your entry route
           permanent: true, // Indicates a 308 permanent redirect
         },
       ];
