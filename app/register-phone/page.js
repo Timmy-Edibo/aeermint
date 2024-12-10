@@ -120,41 +120,43 @@ export default function RegisterPhone() {
                   <h4 className="card-title">Register number to signup</h4>
                 </div>
                 <div className="card-body">
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      registerPhoneNumber();
-                    }}
-                  >
-                    <div className="form-row">
-                      <div className="mb-3 col-xl-12">
-                        <label className="mr-sm-2">Phone number</label>
-                        <input
-                          type="text"
-                          value={phoneNumber}
-                          className="form-control"
-                          placeholder="Enter phone number"
-                          onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
+                  {!showOtpInput && (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        registerPhoneNumber();
+                      }}
+                    >
+                      <div className="form-row">
+                        <div className="mb-3 col-xl-12">
+                          <label className="mr-sm-2">Phone number</label>
+                          <input
+                            type="text"
+                            value={phoneNumber}
+                            className="form-control"
+                            placeholder="Enter phone number"
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                          />
+                        </div>
+                        <div className="col-12 mt-5">
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-100"
+                            style={{
+                              backgroundColor: "#007bff",
+                              borderColor: "#007bff",
+                              padding: "10px 20px",
+                              fontSize: "16px",
+                              fontWeight: "bold",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            Register
+                          </button>
+                        </div>
                       </div>
-                      <div className="col-12 mt-5">
-                        <button
-                          type="submit"
-                          className="btn btn-primary w-100"
-                          style={{
-                            backgroundColor: "#007bff",
-                            borderColor: "#007bff",
-                            padding: "10px 20px",
-                            fontSize: "16px",
-                            fontWeight: "bold",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          Register
-                        </button>
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  )}
 
                   {showOtpInput && (
                     <form
