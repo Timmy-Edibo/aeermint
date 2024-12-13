@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
