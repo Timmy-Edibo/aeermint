@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const baseUrl = "https://aermint.onrender.com/api/v1";
+  const baseUrl = "http://172.210.65.150/api/v1";
 
   // States to manage authentication and user data
   const [auth, setIsAuthenticated] = useState(false);

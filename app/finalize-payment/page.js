@@ -12,7 +12,7 @@ export default function FinalizePayment() {
   const [query, setQuery] = useState("");
   const [amount, setAmount] = useState(0);
   const [transactionDetails, setTransactionDetails] = useState(null);
-  const baseUrl = "https://aermint.onrender.com/api/v1";
+  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   const param = useSearchParams();

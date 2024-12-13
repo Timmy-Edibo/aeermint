@@ -17,7 +17,7 @@ export const SignUpProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userType, setUserType] = useState(null);
 
-  const baseUrl = "https://aermint.onrender.com/api/v1";
+  const baseUrl = "http://172.210.65.150/api/v1";
 
   const handleInputChange = (e) => {
     e.preventDefault();

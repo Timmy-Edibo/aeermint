@@ -12,7 +12,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
 
   const { getCurrentUser } = useAuth(); // Assuming this provides user authentication details
-  const baseurl = "https://aermint.onrender.com/api/v1";
+  const baseurl = "http://172.210.65.150/api/v1";
 
   const fetchUserDetails = async () => {
     try {

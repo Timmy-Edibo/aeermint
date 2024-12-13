@@ -12,7 +12,7 @@ export default function AddBank() {
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const baseUrl = "https://aermint.onrender.com/api/v1";
+  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   const fetchVendorDetails = async () => {

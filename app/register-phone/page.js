@@ -13,7 +13,7 @@ export default function RegisterPhone() {
   const [error, setError] = useState(null);
 
   const inputRefs = useRef([]); // Ref for input focus handling
-  const baseUrl = "https://aermint.onrender.com/api/v1";
+  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   // Register phone number

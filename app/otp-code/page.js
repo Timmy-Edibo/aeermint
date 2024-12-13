@@ -11,7 +11,7 @@ import ToastDisplay from "../../components/elements/ToastDisplay";
 export default function OtpCode() {
   const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState(null);
-  const baseUrl = "https://aermint.onrender.com/api/v1"
+  const baseUrl = "http://172.210.65.150/api/v1"
   const router = useRouter();
   // const { formData,  handleSignUp, error, isLoading } =
   // useSignUp();
