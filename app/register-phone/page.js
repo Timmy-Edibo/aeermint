@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import Loading from "../loading";
+import { baseUrl } from "../../utils/constants";
 
 export default function RegisterPhone() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -13,7 +14,6 @@ export default function RegisterPhone() {
   const [error, setError] = useState(null);
 
   const inputRefs = useRef([]); // Ref for input focus handling
-  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   // Register phone number
@@ -69,7 +69,7 @@ export default function RegisterPhone() {
       console.error(error.message);
       setError(error.message);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

@@ -3,6 +3,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
+import { baseUrl } from "../utils/constants";
 
 const SignUpContext = createContext();
 
@@ -16,8 +17,6 @@ export const SignUpProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userType, setUserType] = useState(null);
-
-  const baseUrl = "http://172.210.65.150/api/v1";
 
   const handleInputChange = (e) => {
     e.preventDefault();
@@ -71,11 +70,6 @@ export const SignUpProvider = ({ children }) => {
           nationalIdentificationNo,
         };
       } else if (userType === "vendorUser") {
-        // if (!businessName || !businessAddress || !businessType) {
-        //   throw new Error(
-        //     "Please fill out all required fields for vendor registration."
-        //   );
-        // }
         payload = {
           password,
           phoneNumber,
@@ -101,13 +95,10 @@ export const SignUpProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      console.log("Signup successful:", data);
-      console.log(data);
       localStorage.setItem("accessToken", data.data.token);
       setAuth(true, data.data);
       router.push("/wallets");
 
-      // Navigate to OTP page
       router.push(`/wallets`);
       alert(`Signup successful: Welcome, ${data.firstName || "User"}!`);
     } catch (err) {

@@ -11,6 +11,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { formatDate } from "../../utils/dateAndTimeFormatter";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
+import { baseUrl } from "../../utils/constants";
 
 export default function Wallets() {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -26,22 +27,6 @@ export default function Wallets() {
 
   const router = useRouter();
 
-  const baseurl = "http://172.210.65.150/api/v1";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchUserDetails();
-
-      await fetchUserTransactions();
-
-      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (storedUser?.account?.interactableType === "USER") {
-        await checkPinStatus();
-      }
-    };
-    fetchData();
-  }, []);
-
   const fetchUserDetails = useCallback(async () => {
     const storedUser = JSON.parse(localStorage.getItem("currentUser"));
     const type =
@@ -50,7 +35,7 @@ export default function Wallets() {
         : `vendor/auth/vendor-detail?routableNumber=${storedUser?.account?.routable?.routableNumber}`;
     try {
       // setLoading(true);
-      const response = await fetch(`${baseurl}/${type}`, {
+      const response = await fetch(`${baseUrl}/${type}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -88,14 +73,16 @@ export default function Wallets() {
           ? "user?userId"
           : "vendor?vendorId";
       const routableNumber =
-        storedUser?.account.routable?.routableNumber || user?.routableNumber;
+        storedUser?.routable?.routableNumber ||
+        storedUser?.account.routable?.routableNumber ||
+        user?.routableNumber;
 
       try {
         setLoading(true);
 
         // Modify the URL to fetch the correct data
         const response = await fetch(
-          `${baseurl}/transactions/${type}=${userId}&routableNumber=${routableNumber}&page=${pageNum}&limit=10`, // Use `page` for pagination
+          `${baseUrl}/transactions/${type}=${userId}&routableNumber=${routableNumber}&page=${pageNum}&limit=10`, // Use `page` for pagination
           {
             method: "GET",
             headers: {
@@ -150,10 +137,10 @@ export default function Wallets() {
   const checkPinStatus = async () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-      const routableNumber = storedUser?.account?.routable?.routableNumber;
+      const routableNumber = storedUser?.routable?.routableNumber || storedUser?.account?.routable?.routableNumber;
       setLoading(true);
       const response = await fetch(
-        `${baseurl}/auth/pin-status?routableNumber=${routableNumber}`,
+        `${baseUrl}/auth/pin-status?routableNumber=${routableNumber}`,
         {
           method: "GET",
           headers: {
@@ -163,15 +150,12 @@ export default function Wallets() {
         }
       );
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
-        console.log("pin status:", data.data);
-        setPinStatus(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "An error occurred. Please try again."
-        );
+        if (data?.data?.hasTransactionPin) {
+          setPinStatus(true);
+        }
       }
     } catch (error) {
       console.error("An error occurred:", error.message);
@@ -186,6 +170,20 @@ export default function Wallets() {
       transaction && encodeURIComponent(JSON.stringify(transaction));
     router.push(`/transaction-details?data=${transactionData}`);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchUserDetails();
+
+      await fetchUserTransactions();
+
+      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (storedUser?.account?.interactableType === "USER") {
+        await checkPinStatus();
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <>

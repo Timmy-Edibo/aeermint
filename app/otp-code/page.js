@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { useSignUp } from "@/contexts/SignUpContext";
 import { useSearchParams } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
+import { baseUrl } from "../../utils/constants";
 
 
 export default function OtpCode() {
   const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState(null);
-  const baseUrl = "http://172.210.65.150/api/v1"
   const router = useRouter();
   // const { formData,  handleSignUp, error, isLoading } =
   // useSignUp();

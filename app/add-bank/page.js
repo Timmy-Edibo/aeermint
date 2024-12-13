@@ -5,6 +5,7 @@ import Layout from "@/components/layout/Layout";
 import { useRouter } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import Loading from "../loading";
+import { baseUrl } from "../../utils/constants";
 
 export default function AddBank() {
   const [vendor, setVendor] = useState(null);
@@ -12,7 +13,6 @@ export default function AddBank() {
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   const fetchVendorDetails = async () => {

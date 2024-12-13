@@ -4,12 +4,21 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSignUp } from "@/contexts/SignUpContext";
 import Loading from "../loading";
 import Link from "next/link";
+import countries from "world-countries";
 
 const SignUpForm = () => {
   const { formData, handleInputChange, handleSignUp, error, isLoading } =
     useSignUp();
-
   const [vendor, setVendor] = useState(false);
+
+  const getCountries = () => {
+    return countries.map((country) => ({
+      name: country.name.common,
+      code: country.cca2,
+    }));
+  };
+
+  const countryList = getCountries();
 
   const handleChecked = (e) => {
     console.log("e:", e.target.value);
@@ -110,15 +119,31 @@ const SignUpForm = () => {
             />
           </div>
           {!vendor && (
+            // <div className="col-12 mb-3">
+            //   <label className="form-label">Country</label>
+            //   <input
+            //     name="country"
+            //     type="text"
+            //     className="form-control"
+            //     value={formData?.country}
+            //     onChange={handleInputChange}
+            //   />
+            // </div>
             <div className="col-12 mb-3">
               <label className="form-label">Country</label>
-              <input
+              <select
                 name="country"
-                type="text"
                 className="form-control"
                 value={formData?.country}
                 onChange={handleInputChange}
-              />
+              >
+                <option value="">Select a country</option>
+                {countryList.map((country) => (
+                  <option key={country?.code} value={country?.name}>
+                    {country?.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
           {!vendor && (

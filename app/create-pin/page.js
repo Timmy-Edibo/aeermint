@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import Loading from "../loading";
 import { useAuth } from "../../contexts/AuthContext";
+import { baseUrl } from "../../utils/constants";
 
 export default function AddBank() {
   const [pinData, setPinData] = useState(Array(4).fill(""));
@@ -49,6 +50,7 @@ export default function AddBank() {
 
   const createTransactionPin = async () => {
     try {
+      console.log(getCurrentUser());
       setLoading(true);
       const pinCode = pinData?.join("");
 
@@ -59,8 +61,8 @@ export default function AddBank() {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify({
-          pin: pinCode,
-          routableNumber: getCurrentUser?.account?.routable?.routableNumber,
+          transactionPin: pinCode,
+          routableNumber: getCurrentUser()?.account?.routable?.routableNumber || getCurrentUser()?.routable?.routableNumber,
         }),
       });
 
@@ -71,8 +73,9 @@ export default function AddBank() {
       }
 
       const data = await response.json();
-      setVendor(data?.data);
-      router.push(`/wallets`);
+      if (response.ok) {
+        router.push(`/wallets`);
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -84,7 +87,6 @@ export default function AddBank() {
     e.preventDefault();
 
     createTransactionPin();
-
   };
 
   return (
@@ -100,7 +102,7 @@ export default function AddBank() {
                     <h4 className="card-title">Create 4-digit Pin</h4>
                   </div>
                   <div className="card-body">
-                    <form onSubmit={(e)=>handleSubmit(e)}>
+                    <form onSubmit={(e) => handleSubmit(e)}>
                       <div
                         className="d-flex justify-content-center align-items-center"
                         style={{ gap: "10px", margin: "20px 0" }}

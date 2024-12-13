@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import { useRouter } from "next/navigation";
+import { baseUrl } from "../../utils/constants";
 
 export default function FinalizePayment() {
   // const [vendor, setVendor] = useState({});
   const [query, setQuery] = useState("");
   const [amount, setAmount] = useState(0);
   const [transactionDetails, setTransactionDetails] = useState(null);
-  const baseUrl = "http://172.210.65.150/api/v1";
   const router = useRouter();
 
   const param = useSearchParams();

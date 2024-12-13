@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext";
 import { formatDate } from "../../utils/dateAndTimeFormatter";
 import Loading from "../loading";
+import { baseUrl } from "../../utils/constants";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { getCurrentUser } = useAuth(); // Assuming this provides user authentication details
-  const baseurl = "http://172.210.65.150/api/v1";
 
   const fetchUserDetails = async () => {
     try {
@@ -42,7 +42,7 @@ export default function Profile() {
       }
 
       // Make the API request
-      const response = await fetch(`${baseurl}/${url}`, {
+      const response = await fetch(`${baseUrl}/${url}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

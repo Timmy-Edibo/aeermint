@@ -21,6 +21,7 @@
         "react-dom": "18.2.0",
         "react-perfect-scrollbar": "^1.5.8",
         "sass": "^1.69.5",
+        "world-countries": "^5.0.0",
         "wowjs": "^1.1.3"
     }
 }

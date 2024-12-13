@@ -4,6 +4,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ToastDisplay from "../components/elements/ToastDisplay";
 import Loading from "../app/loading";
+import { baseUrl } from "../utils/constants";
 
 const AuthContext = createContext({
   auth: false,
@@ -19,7 +20,6 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const baseUrl = "http://172.210.65.150/api/v1";
 
   // States to manage authentication and user data
   const [auth, setIsAuthenticated] = useState(false);
@@ -56,9 +56,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getCurrentUser = () => currentUser;
-  const getAuth = () => auth;
-
   // Handle sign-in logic
   const signIn = async (credentials) => {
     setIsLoading(true);
@@ -89,6 +86,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+
+  const getCurrentUser = () => currentUser;
+  const getAuth = () => auth;
 
   const signOut = () => {
     if (typeof window !== "undefined") {
