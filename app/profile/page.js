@@ -22,17 +22,19 @@ export default function Profile() {
       const storedUserString = localStorage?.getItem("currentUser");
       const storedUser = storedUserString ? JSON.parse(storedUserString) : null;
 
-      if (!storedUser || !storedUser.account) {
+      if (!storedUser || !storedUser?.account) {
         throw new Error("Invalid user data in localStorage");
       }
 
       let url = "";
 
       // Set the appropriate API URL based on interactableType
-      if (storedUser.account.interactableType === "USER") {
+      if (storedUser?.account?.interactableType === "USER") {
         url = "user/auth/user-detail";
       } else if (storedUser.account.interactableType === "VENDOR") {
-        const routableNumber = storedUser.account.routable?.routableNumber;
+        const routableNumber =
+          storedUser?.account?.routable?.routableNumber ||
+          storedUser?.routable?.routableNumber;
         if (!routableNumber) {
           throw new Error("Routable number is missing for VENDOR");
         }
@@ -79,7 +81,7 @@ export default function Profile() {
               <div className="card-body">
                 <div className="profile-name">
                   <div className="d-flex">
-                    <img src={user?.avatar} alt="" />
+                    {/* <img src={user?.avatar} alt="" /> */}
                     <div className="flex-grow-1">
                       <h4 className="mb-0">
                         {user?.firstName} {user?.lastName}
@@ -90,8 +92,8 @@ export default function Profile() {
                 </div>
                 <div className="profile-reg">
                   <div className="registered">
-                    <h5>Created: {user && formatDate(user?.createdAt)}</h5>
-                    <p>Verified</p>
+                    <h5>Created</h5>
+                    <p>{user && formatDate(user?.createdAt)}</p>
                   </div>
                   <span className="reg_divider" />
                   <div className="rank">
@@ -109,7 +111,7 @@ export default function Profile() {
                     <li>
                       <Link
                         data-bs-toggle="tab"
-                        href="#city-bank"
+                        href="/wallets"
                         className="active"
                       >
                         <span className="icons usd">
