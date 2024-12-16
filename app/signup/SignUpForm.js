@@ -7,8 +7,14 @@ import Link from "next/link";
 import countries from "world-countries";
 
 const SignUpForm = () => {
-  const { formData, handleInputChange, handleSignUp, error, isLoading } =
-    useSignUp();
+  const {
+    formData,
+    handleInputChange,
+    handleSignUp,
+    error,
+    isLoading,
+    setUserType,
+  } = useSignUp();
   const [selectedTab, setSelectedTab] = useState("regularUser"); // "regularUser" or "vendorUser"
 
   const getCountries = () => {
@@ -20,21 +26,32 @@ const SignUpForm = () => {
 
   const countryList = getCountries();
 
+  const selectUserType = (type) => {
+    setUserType(type);
+    setSelectedTab(type);
+  };
+
   return (
     <div className="auth-form">
       {isLoading && <Loading />}
       <h4>Sign Up</h4>
       <div className="tab-buttons d-flex justify-content-center mb-4">
         <button
-          className={`btn ${selectedTab === "regularUser" ? "btn-primary" : "btn-outline-primary"}`}
-          onClick={() => setSelectedTab("regularUser")}
+          className={`btn ${
+            selectedTab === "regularUser"
+              ? "btn-primary"
+              : "btn-outline-primary"
+          }`}
+          onClick={() => selectUserType("regularUser")}
           style={{ width: "50%" }}
         >
           Regular User
         </button>
         <button
-          className={`btn ${selectedTab === "vendorUser" ? "btn-primary" : "btn-outline-primary"}`}
-          onClick={() => setSelectedTab("vendorUser")}
+          className={`btn ${
+            selectedTab === "vendorUser" ? "btn-primary" : "btn-outline-primary"
+          }`}
+          onClick={() => selectUserType("vendorUser")}
           style={{ width: "50%" }}
         >
           Vendor
@@ -83,7 +100,9 @@ const SignUpForm = () => {
                 </select>
               </div>
               <div className="col-12 mb-3">
-                <label className="form-label">National Identification Number</label>
+                <label className="form-label">
+                  National Identification Number
+                </label>
                 <input
                   name="nationalIdentificationNo"
                   type="text"
@@ -166,4 +185,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-

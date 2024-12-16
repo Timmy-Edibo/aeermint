@@ -8,11 +8,17 @@ import { baseUrl } from "../utils/constants";
 const SignUpContext = createContext();
 
 export const SignUpProvider = ({ children }) => {
-  const {setAuth} = useAuth();
+  const { setAuth } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    phoneNumber: "",
+    country: "",
+    nationalIdentificationNo: "",
+    rcNumber: "",
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +40,6 @@ export const SignUpProvider = ({ children }) => {
 
     try {
       const {
-        userType, // Corrected this typo to reference it from formData
         email,
         password,
         firstName,
@@ -117,6 +122,7 @@ export const SignUpProvider = ({ children }) => {
         handleSignUp,
         error,
         isLoading,
+        setUserType,
       }}
     >
       {children}
