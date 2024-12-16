@@ -75,3 +75,23 @@ export const formatDateAndTime = (isoString) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
+export const formatTime = (isoString) => {
+  if (!isoString || typeof isoString !== "string") {
+    console.error("Invalid date string:", isoString);
+    return "Invalid date";
+  }
+
+  const date = new Date(isoString);
+
+  if (isNaN(date)) {
+    throw new Error("Invalid date format");
+  }
+
+  // Get time components
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+};
+

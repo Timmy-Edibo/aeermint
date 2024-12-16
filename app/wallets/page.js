@@ -11,6 +11,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import {
   formatDate,
   formatDateAndTime,
+  formatTime,
 } from "../../utils/dateAndTimeFormatter";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,6 @@ import { baseUrl } from "../../utils/constants";
 export default function Wallets() {
   const [activeIndex, setActiveIndex] = useState(1);
   const [user, setUser] = useState(null);
-  // const [storedUser, setStoredUser] = useState(null);
   const [userType, setUserType] = useState(null);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
@@ -33,9 +33,13 @@ export default function Wallets() {
   const fetchUserDetails = useCallback(async () => {
     const storedUser = JSON.parse(localStorage.getItem("currentUser"));
     const type =
-      storedUser?.account?.interactableType === "USER"
+      (storedUser?.account?.interactableType ||
+        storedUser?.routable?.routableNumber) === "USER"
         ? "user/auth/user-detail"
-        : `vendor/auth/vendor-detail?routableNumber=${storedUser?.account?.routable?.routableNumber}`;
+        : `vendor/auth/vendor-detail?routableNumber=${
+            storedUser?.account?.routable?.routableNumber ||
+            storedUser?.routable?.routableNumber
+          }`;
     try {
       // setLoading(true);
       const response = await fetch(`${baseUrl}/${type}`, {
@@ -70,22 +74,12 @@ export default function Wallets() {
     async (pageNum) => {
       pageNum = page || 1;
       const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-      const userId = storedUser?.id || user?.id;
       const type =
-        storedUser?.account?.interactableType === "USER"
-          ? "user?userId"
-          : "vendor?vendorId";
-      const routableNumber =
-        storedUser?.routable?.routableNumber ||
-        storedUser?.account.routable?.routableNumber ||
-        user?.routableNumber;
+        storedUser?.account?.interactableType === "USER" ? "user" : "vendor";
 
       try {
-        // setLoading(true);
-
-        // Modify the URL to fetch the correct data
         const response = await fetch(
-          `${baseUrl}/transactions/${type}=${userId}&routableNumber=${routableNumber}&page=${pageNum}&limit=10`, // Use `page` for pagination
+          `${baseUrl}/transactions/${type}?page=${pageNum}&limit=10`, // Use `page` for pagination
           {
             method: "GET",
             headers: {
@@ -97,15 +91,13 @@ export default function Wallets() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("tx", data.data);
+          console.log("tx", data);
 
-          // Ensure that `data.data` is an array before appending
           if (data && data?.data) {
             setCount(data?.data?.meta?.totalCount);
-            setTransactionsList((prevTransactions) => [
-              ...prevTransactions, // Append new transactions to the previous list
-              ...data?.data?.transactions, // Add the new transactions fetched from API
-            ]);
+            setTransactionsList(
+              data?.data?.transactions // Add the new transactions fetched from API
+            );
           }
         } else {
           const errorData = await response.json();
@@ -121,7 +113,7 @@ export default function Wallets() {
       }
     },
     [user, page]
-  ); // Add `page` as a dependency to re-fetch when page changes
+  ); 
 
   const handleScroll = (event) => {
     const bottom =
@@ -139,11 +131,11 @@ export default function Wallets() {
 
   const checkPinStatus = async () => {
     try {
+      setLoading(true);
       const storedUser = JSON.parse(localStorage.getItem("currentUser"));
       const routableNumber =
         storedUser?.routable?.routableNumber ||
         storedUser?.account?.routable?.routableNumber;
-      // setLoading(true);
       const response = await fetch(
         `${baseUrl}/auth/pin-status?routableNumber=${routableNumber}`,
         {
@@ -164,7 +156,7 @@ export default function Wallets() {
       }
     } catch (error) {
       console.error("An error occurred:", error.message);
-      setError(error.message); // Save error message to display
+      setError(error.message); 
     } finally {
       setLoading(false);
     }
@@ -237,17 +229,17 @@ export default function Wallets() {
                             <p className="mb-0">Total Balance</p>
                             <h2>
                               {user?.account?.currency}{" "}
-                              {user?.account?.upperBalance < 1 && 20000}
+                              {user?.account?.completedBalance}
                             </h2>
                           </div>
                           <div className="rank">
                             <h5>Account number</h5>
-                            <p>{user?.account.routable.routableNumber}</p>
+                            <p>{user?.account?.routable?.routableNumber}</p>
                           </div>
                           <span className="reg_divider" />
                           <div className="rank">
                             <h5>Currency</h5>
-                            <p>{user?.account.currency}</p>
+                            <p>{user?.account?.currency}</p>
                           </div>
                         </div>
                       </div>
@@ -257,17 +249,15 @@ export default function Wallets() {
                       <div className="card">
                         <div className="card-body">
                           <div className="registered">
-                            <h5>
-                              Created
-                            </h5>
+                            <h5>Created</h5>
                             <p>{user && formatDate(user?.createdAt)}</p>
                           </div>
                           <div className="rank">
                             <h5>Type</h5>
-                            <p>{user?.account.interactableType}</p>
+                            <p>{user?.account?.interactableType}</p>
                           </div>
                           <span className="reg_divider" />
-                         
+
                           <span className="reg_divider" />
                           <div className="rank">
                             <h5>Country</h5>
@@ -290,8 +280,9 @@ export default function Wallets() {
                               <table className="table mb-0 table-responsive-sm">
                                 <thead>
                                   <tr>
-                                    <th>Category</th>
+                                    <th>Ref</th>
                                     <th>Date</th>
+                                    <th>Time</th>
                                     <th>Status</th>
                                     <th>Amount</th>
                                     <th>Currency</th>
@@ -308,23 +299,21 @@ export default function Wallets() {
                                     transactionsList?.map(
                                       (transaction, index) => (
                                         <tr
-                                          // key={index}
+                                          key={index}
                                           onClick={() =>
                                             handleRowClick(transaction)
                                           }
                                           style={{ cursor: "pointer" }}
                                         >
                                           <td>
-                                            <span className="table-category-icon">
-                                              <i className="bg-emerald-500 fi fi-rr-barber-shop" />
-                                              {transaction?.transactionType}
-                                            </span>
+                                              {transaction?.transactionRef}
                                           </td>
                                           <td>
-                                            {formatDateAndTime(
+                                            {formatDate(
                                               transaction?.createdAt
                                             )}
                                           </td>
+                                          <td>{formatTime(transaction?.createdAt)}</td>
                                           <td>{transaction?.status}</td>
                                           <td>{transaction?.amount}</td>
                                           <td>{transaction?.currency}</td>

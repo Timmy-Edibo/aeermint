@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Loading from "../../loading";
 import ToastDisplay from "../../../components/elements/ToastDisplay";
 import { useEffect, useState } from "react";
-import { formatDateAndTime } from "../../../utils/dateAndTimeFormatter";
+import { formatDate, formatTime } from "../../../utils/dateAndTimeFormatter";
 import { baseUrl } from "../../../utils/constants";
 
 export default function TransactionDetails() {
@@ -16,9 +16,7 @@ export default function TransactionDetails() {
   const fetchTransactionDetails = async (uuid) => {
     const storedUser = JSON.parse(localStorage.getItem("currentUser"));
     const type =
-        storedUser?.account?.interactableType === "USER"
-          ? "user"
-          : "vendor";
+      storedUser?.account?.interactableType === "USER" ? "user" : "vendor";
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}/transactions/${type}/${uuid}`, {
@@ -31,12 +29,14 @@ export default function TransactionDetails() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch transaction details");
+        throw new Error(
+          errorData.message || "Failed to fetch transaction details"
+        );
       }
 
       const data = await response.json();
       console.log("Fetched Data:", data);
-      setParsedData(data?.data);
+      setParsedData(data?.data?.transaction);
     } catch (error) {
       console.error("Error fetching transaction details:", error.message);
     } finally {
@@ -54,7 +54,7 @@ export default function TransactionDetails() {
     <Layout breadcrumbTitle="Transaction Details">
       {loading && <Loading />}
       <div className="row">
-        <div className="col-xxl-12 col-xl-12">
+        <div className="col-xxl-12 col-xl-12 col-md-12 col-sm-12">
           <div className="d-flex justify-content-around">
             <div className="w-50">
               <div className="card">
@@ -67,52 +67,70 @@ export default function TransactionDetails() {
                       <li>
                         <p className="mb-0">Transaction Ref</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.transactionRef || "N/A"}</span>
+                          <span>{parsedData?.transactionRef}</span>
                         </h5>
                       </li>
                       <li>
-                        <p className="mb-0">Transaction Type</p>
+                        <p className="mb-0">Sender Name</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.transactionType || "N/A"}</span>
+                          <span>{parsedData?.payer?.businessName} {parsedData?.payer?.businessAddress}</span>
+                        </h5>
+                      </li>
+                      <li>
+                        <p className="mb-0">Sender Ac/No</p>
+                        <h5 className="mb-0">
+                          <span>{parsedData?.payer?.routableNumber}</span>
                         </h5>
                       </li>
                       <li>
                         <p className="mb-0">Transaction Amount</p>
                         <h5 className="mb-0">
                           <span>{parsedData?.currency}</span>
-                          <span>{parsedData?.amount || "N/A"}</span>
+                          <span>{parsedData?.amount}</span>
                         </h5>
                       </li>
                       <li>
-                        <p className="mb-0">Transaction Fees</p>
+                        <p className="mb-0">Transaction Fee</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.fees || "N/A"}</span>
+                          <span>{parsedData?.transactionFee}</span>
                         </h5>
                       </li>
                       <li>
+                        <p className="mb-0">Exchange Rate</p>
+                        <h5 className="mb-0">
+                          <span>{parsedData?.exchangeRate}</span>
+                        </h5>
+                      </li>
+                      {/* <li>
                         <p className="mb-0">Vendor Name</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.vendorName || "N/A"}</span>
+                          <span>{parsedData?.vendorName}</span>
                         </h5>
-                      </li>
-                      <li>
+                      </li> */}
+                      {/* <li>
                         <p className="mb-0">Customer Name</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.customerName || "N/A"}</span>
+                          <span>{parsedData?.customerName}</span>
                         </h5>
-                      </li>
+                      </li> */}
                       <li>
-                        <p className="mb-0">Transaction Creation Date</p>
+                        <p className="mb-0">Transaction Date</p>
                         <h5 className="mb-0">
-                          <span>{formatDateAndTime(parsedData?.createdAt) || "N/A"}</span>
+                          <span>{formatDate(parsedData?.createdAt)}</span>
                         </h5>
                       </li>
                       <li>
+                        <p className="mb-0">Transaction Time</p>
+                        <h5 className="mb-0">
+                          <span>{formatTime(parsedData?.createdAt)}</span>
+                        </h5>
+                      </li>
+                      {/* <li>
                         <p className="mb-0">Transaction Completion Date</p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.completionDate || "N/A"}</span>
+                          <span>{parsedData?.completedAt}</span>
                         </h5>
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 </div>
@@ -124,19 +142,6 @@ export default function TransactionDetails() {
     </Layout>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -166,12 +171,12 @@ export default function TransactionDetails() {
 //           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
 //         },
 //       });
-  
+
 //       if (!response.ok) {
 //         const errorData = await response.json();
 //         throw new Error(errorData.message || "Failed to fetch transaction details");
 //       }
-  
+
 //       const data = await response.json();
 //       console.log("Fetched Data:", data);
 //       setParsedData(data?.data);
@@ -181,11 +186,11 @@ export default function TransactionDetails() {
 //       setLoading(false);
 //     }
 //   };
-  
+
 //   useEffect(() => {
 //     const initializeData = async () => {
 //       if (!uuid) return; // Skip if `uuid` is undefined or null
-  
+
 //       try {
 //         console.log(uuid);
 //         setLoading(true);
@@ -197,10 +202,10 @@ export default function TransactionDetails() {
 //         setLoading(false);
 //       }
 //     };
-  
+
 //     initializeData();
 //   }, []);
-  
+
 //   return (
 //     <>
 //       <Layout breadcrumbTitle="Transaction Details">
@@ -221,50 +226,50 @@ export default function TransactionDetails() {
 //                         <li>
 //                           <p className="mb-0">Transaction Ref</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.transactionRef || "N/A"}</span>
+//                             <span>{parsedData?.transactionRef}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Transaction Type</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.transactionType || "N/A"}</span>
+//                             <span>{parsedData?.transactionType}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Transaction Amount</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.currency}</span><span>{parsedData?.amount || "N/A"}</span>
+//                             <span>{parsedData?.currency}</span><span>{parsedData?.amount}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Transaction Fees</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.fees || "N/A"}</span>
+//                             <span>{parsedData?.fees}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Vendor Name</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.vendorName || "N/A"}</span>
+//                             <span>{parsedData?.vendorName}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Customer Name</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.customerName || "N/A"}</span>
+//                             <span>{parsedData?.customerName}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Transaction Creation Date</p>
 //                           <h5 className="mb-0">
-//                             {/* <span>{formatDateAndTime(parsedData?.createdAt) || "N/A"}</span> */}
-//                             <span>{formatDateAndTime(parsedData?.createdAt) || "N/A"}</span>
+//                             {/* <span>{formatDateAndTime(parsedData?.createdAt)}</span> */}
+//                             <span>{formatDateAndTime(parsedData?.createdAt)}</span>
 //                           </h5>
 //                         </li>
 //                         <li>
 //                           <p className="mb-0">Transaction Completion Date</p>
 //                           <h5 className="mb-0">
-//                             <span>{parsedData?.completionDate || "N/A"}</span>
+//                             <span>{parsedData?.completionDate}</span>
 //                           </h5>
 //                         </li>
 //                       </ul>
