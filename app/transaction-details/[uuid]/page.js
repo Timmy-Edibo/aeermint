@@ -13,6 +13,8 @@ export default function TransactionDetails() {
   const [parsedData, setParsedData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  
+
   const fetchTransactionDetails = async (uuid) => {
     const storedUser = JSON.parse(localStorage.getItem("currentUser"));
     const type =
@@ -71,15 +73,33 @@ export default function TransactionDetails() {
                         </h5>
                       </li>
                       <li>
-                        <p className="mb-0">Sender Name</p>
+                        <p className="mb-0">
+                          {parsedData?.vendor?.interactableType === "USER" ? "Recipient" : "Sender"}
+                        </p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.payer?.businessName} {parsedData?.payer?.businessAddress}</span>
+                          {parsedData?.vendor?.interactableType === "USER"? (
+                            <span>
+                              {parsedData?.vendor?.businessName}{" "}
+                              {parsedData?.vendor?.businessAddress}
+                            </span>
+                          ) : (
+                            <span>
+                              {parsedData?.payer?.firstName}{" "}
+                              {parsedData?.payer?.lastName}
+                            </span>
+                          )}
                         </h5>
                       </li>
                       <li>
-                        <p className="mb-0">Sender Ac/No</p>
+                        <p className="mb-0">
+                          {type === "USER" ? "Recipient Ac/No" : "Sender Ac/No"}
+                        </p>
                         <h5 className="mb-0">
-                          <span>{parsedData?.payer?.routableNumber}</span>
+                          {parsedData?.vendor?.interactableType === "USER" ? (
+                            <span>{parsedData?.vendor?.routableNumber}</span>
+                          ) : (
+                            <span>{parsedData?.payer?.routableNumber}</span>
+                          )}
                         </h5>
                       </li>
                       <li>
