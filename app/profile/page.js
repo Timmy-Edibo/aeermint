@@ -11,17 +11,11 @@ import { baseUrl } from "../../utils/constants";
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const { getCurrentUser } = useAuth(); // Assuming this provides user authentication details
-
-  const storedUserString = localStorage?.getItem("currentUser");
-  const storedUser = storedUserString ? JSON.parse(storedUserString) : null;
-
   const fetchUserDetails = async () => {
+    const storedUserString = localStorage.getItem("currentUser");
+    const storedUser = storedUserString ? JSON.parse(storedUserString) : null;
     try {
       setLoading(true);
-
-      // Retrieve storedUser safely and parse it from JSON
 
       if (!storedUser || !storedUser?.account) {
         throw new Error("Invalid user data in localStorage");
@@ -87,7 +81,7 @@ export default function Profile() {
                       <h4 className="mb-0">
                         {user?.firstName} {user?.lastName}
                       </h4>
-                      <p>{storedUser?.email || user?.email}</p>
+                      <p>{user?.email}</p>
                     </div>
                   </div>
                 </div>
