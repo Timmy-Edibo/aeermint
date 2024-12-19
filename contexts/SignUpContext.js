@@ -104,7 +104,11 @@ export const SignUpProvider = ({ children }) => {
       setAuth(true, data.data);
       router.push("/wallets");
 
+
+      localStorage?.removeItem('signUpPhoneNumber');
+      localStorage?.removeItem('signUpCountry');
       router.push(`/wallets`);
+      // change to toast
       alert(`Signup successful: Welcome, ${data.firstName || "User"}!`);
     } catch (err) {
       console.error("Signup error:", err.message);

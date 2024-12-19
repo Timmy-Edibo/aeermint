@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import Loading from "../loading";
 import { baseUrl } from "../../utils/constants";
+import countries from "../../utils/countries";
 
 export default function RegisterPhone() {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState(["", "", "", ""]); // Array for OTP inputs
-  const [showOtpInput, setShowOtpInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [country, setCountry] = useState("");
 
-  const inputRefs = useRef([]); // Ref for input focus handling
   const router = useRouter();
 
   // Register phone number
@@ -30,12 +30,16 @@ export default function RegisterPhone() {
 
       if (!response.ok) {
         const errorData = await response.json();
+      
         throw new Error(errorData.message || "An unknown error occurred!");
       }
 
       const data = await response.json();
-      console.log(data);
-      setShowOtpInput(true);
+
+      localStorage?.setItem('signUpPhoneNumber', data?.data?.phoneNumber);
+      localStorage?.setItem('signUpCountry', country);
+
+      router.push("/otp-code?phoneNumber=" + data?.data?.phoneNumber);
     } catch (error) {
       console.error(error.message);
       setError(error.message);
@@ -44,173 +48,83 @@ export default function RegisterPhone() {
     }
   };
 
-  // Verify OTP
-  const verifyOtp = async () => {
-    const otpValue = otp.join(""); // Combine OTP digits
-    try {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}/auth/verify-phone`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phoneNumber: phoneNumber, otp: otpValue }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An unknown error occurred!");
-      }
-
-      const data = await response.json();
-      console.log(data);
-      router.push("/signup");
-    } catch (error) {
-      console.error(error.message);
-      setError(error.message);
-    } finally {
-      // setLoading(false);
-    }
-  };
-
-  // Handle OTP input changes
-  const handleOtpChange = (value, index) => {
-    if (/^\d?$/.test(value)) {
-      const updatedOtp = [...otp];
-      updatedOtp[index] = value;
-      setOtp(updatedOtp);
-
-      // Move focus to the next input
-      if (value && index < otp.length - 1) {
-        inputRefs.current[index + 1].focus();
-      }
-    }
-  };
-
-  // Handle backspace and arrow key navigation
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace") {
-      if (!otp[index] && index > 0) {
-        inputRefs.current[index - 1].focus();
-      }
-      const updatedOtp = [...otp];
-      updatedOtp[index] = ""; // Clear current input
-      setOtp(updatedOtp);
-    } else if (e.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1].focus();
-    } else if (e.key === "ArrowRight" && index < otp.length - 1) {
-      inputRefs.current[index + 1].focus();
-    }
-  };
-
-  // Prevent paste in OTP inputs
-  const handlePaste = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <>
       {loading && <Loading />}
-      <div className="verification section-padding">
+      <div className="authincation">
         <div className="container h-100">
           <div className="row justify-content-center h-100 align-items-center">
             <div className="col-xl-5 col-md-6">
+              <div className="mini-logo text-center my-5">
+                <Link href="/index">
+                  <img
+                    style={{ width: "20%", justifySelf: "center" }}
+                    src="./images/aermint_logo_one.png"
+                    alt=""
+                  />
+                </Link>
+              </div>
               <div className="card">
-                <div className="card-header">
-                  <h4 className="card-title">Register number to signup</h4>
-                </div>
                 <div className="card-body">
-                  {!showOtpInput && (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        registerPhoneNumber();
-                      }}
-                    >
-                      <div className="form-row">
-                        <div className="mb-3 col-xl-12">
-                          <label className="mr-sm-2">Phone number</label>
-                          <input
-                            type="text"
-                            value={phoneNumber}
-                            className="form-control"
-                            placeholder="Enter phone number"
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                          />
-                        </div>
-                        <div className="col-12 mt-5">
-                          <button
-                            type="submit"
-                            className="btn btn-primary w-100"
-                            style={{
-                              backgroundColor: "#007bff",
-                              borderColor: "#007bff",
-                              padding: "10px 20px",
-                              fontSize: "16px",
-                              fontWeight: "bold",
-                              borderRadius: "5px",
-                            }}
-                          >
-                            Register
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  )}
-
-                  {showOtpInput && (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        verifyOtp();
-                      }}
-                    >
-                      <label className="mr-sm-2">Enter OTP</label>
-                      <div
-                        className="d-flex justify-content-center align-items-center"
-                        style={{ gap: "10px", margin: "20px 0" }}
-                      >
-                        {otp?.map((value, index) => (
-                          <input
-                            key={index}
-                            type="text"
-                            value={value}
-                            onChange={(e) =>
-                              handleOtpChange(e.target.value, index)
-                            }
-                            onKeyDown={(e) => handleKeyDown(e, index)}
-                            onPaste={handlePaste}
-                            className="form-control text-center"
-                            maxLength="1"
-                            style={{
-                              height: "50px",
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                              border: "1px solid #ccc",
-                              borderRadius: "5px",
-                            }}
-                            ref={(el) => (inputRefs.current[index] = el)}
-                          />
+                  <h3 className="text-center">2-Step Verification</h3>
+                  <p className="text-center mb-5">
+                    We will send one time code on this number
+                  </p>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      registerPhoneNumber();
+                    }}
+                  >
+                    <div className="mb-3 col-12">
+                      <label className="form-label">Country</label>
+                      <select onChange={(event) => setCountry(event.target.value)} className="form-select" name="country">
+                        <option value="">Select</option>
+                        {countries.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
                         ))}
+                      </select>
+                    </div>
+                    <div className="mb-3 col-12">
+                      <label className="mb-3">Your phone number</label>
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text">
+                            <i className="fi fi-sr-phone-call" />
+                          </span>
+                        </div>
+                        <input
+                          type="number"
+                          value={phoneNumber}
+                          className="form-control"
+                          placeholder="Enter phone number"
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                        />
                       </div>
-                      <div className="col-12 mt-5">
-                        <button
-                          type="submit"
-                          className="btn btn-primary w-100"
-                          style={{
-                            backgroundColor: "#007bff",
-                            borderColor: "#007bff",
-                            padding: "10px",
-                            fontSize: "16px",
-                            fontWeight: "bold",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
-                  )}
+                    </div>
+                    <div className="alert-text">
+                      <small>
+                        Security is critical on Aermint. to help keep your
+                        account safe, we'll text you a verification code when
+                        you sign in on a new device
+                      </small>
+                    </div>
+                    <div className="text-center mt-4">
+                      <button type="submit" className="btn btn-success w-100">
+                        Send
+                      </button>
+                    </div>
+                  </form>
+                  <div className="new-account mt-3 d-flex justify-content-between">
+                    <p>
+                      Don't get code?{" "}
+                      <Link className="text-primary" href="/otp-code">
+                        Resend
+                      </Link>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
