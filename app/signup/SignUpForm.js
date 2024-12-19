@@ -22,12 +22,11 @@ const SignUpForm = () => {
   const param = useSearchParams();
 
   const phoneNumber = param?.get("phoneNumber");
-  const country = localStorage?.getItem('signUpCountry');
-  
+  const country = localStorage?.getItem("signUpCountry");
+
   if (phoneNumber) formData.phoneNumber = phoneNumber;
   if (country) formData.country = country;
   // useEffect(() => {
-   
 
   // }, []);
 
@@ -118,6 +117,16 @@ const SignUpForm = () => {
                   onChange={handleInputChange}
                 />
               </div>
+              <div className="col-12 mb-3">
+                <label className="form-label">Password</label>
+                <input
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  value={formData?.password}
+                  onChange={handleInputChange}
+                />
+              </div>
             </>
           </Tab>
           <Tab eventKey="vendorUser" title="Vendor">
@@ -146,16 +155,7 @@ const SignUpForm = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div className="col-12 mb-3">
-          <label className="form-label">Password</label>
-          <input
-            name="password"
-            type="password"
-            className="form-control"
-            value={formData?.password}
-            onChange={handleInputChange}
-          />
-        </div>
+
         {error && <p className="text-danger">{error}</p>}
 
         <div className="mt-3 d-grid gap-2">

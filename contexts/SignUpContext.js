@@ -57,7 +57,7 @@ export const SignUpProvider = ({ children }) => {
       if (userType === "regularUser") {
         url = "user/auth/register";
       } else if (userType === "vendorUser") {
-        url = "vendor/auth/register";
+        url = "vendor/auth/vendor-lookup";
       } else {
         throw new Error("Invalid user type selected.");
       }
@@ -76,7 +76,7 @@ export const SignUpProvider = ({ children }) => {
         };
       } else if (userType === "vendorUser") {
         payload = {
-          password,
+          // password,
           phoneNumber,
           rcNumber,
         };
@@ -99,15 +99,18 @@ export const SignUpProvider = ({ children }) => {
         );
       }
 
-      const data = await response.json();
-      localStorage.setItem("accessToken", data.data.token);
-      setAuth(true, data.data);
-      router.push("/wallets");
-
-
-      localStorage?.removeItem('signUpPhoneNumber');
-      localStorage?.removeItem('signUpCountry');
-      router.push(`/wallets`);
+      if (userType === "vendorUser") {
+        const data = await response.json();
+        localStorage.setItem("vendorData", JSON.stringify(data?.data));
+        router.push("/vendor-lookup");
+      } else {
+        const data = await response.json();
+        localStorage.setItem("accessToken", data.data.token);
+        setAuth(true, data.data);
+        localStorage?.removeItem("signUpPhoneNumber");
+        localStorage?.removeItem("signUpCountry");
+        router.push("/wallets");
+      }
       // change to toast
       alert(`Signup successful: Welcome, ${data.firstName || "User"}!`);
     } catch (err) {
