@@ -17,7 +17,8 @@ export default function OtpCode() {
 
   const param = useSearchParams();
   const phoneNumber = param.get("phoneNumber");
-  const maskedNumber = phoneNumber?.slice(0, -3).replace(/\d/g, 'x') + phoneNumber?.slice(-3);
+  const maskedNumber =
+    phoneNumber?.slice(0, -3).replace(/\d/g, "x") + phoneNumber?.slice(-3);
 
   // Verify OTP
   const verifyOtp = async () => {
@@ -38,7 +39,9 @@ export default function OtpCode() {
       }
 
       const data = await response.json();
-      router.push(`/signup?phoneNumber=${localStorage?.getItem('signUpPhoneNumber')}`);
+      router.push(
+        `/signup?phoneNumber=${localStorage?.getItem("signUpPhoneNumber")}`
+      );
     } catch (error) {
       console.error(error.message);
       setError(error.message);
@@ -84,7 +87,7 @@ export default function OtpCode() {
 
   return (
     <>
-     {loading && <Loading />}
+      {loading && <Loading />}
       <div className="authincation">
         <div className="container h-100">
           <div className="row justify-content-center h-100 align-items-center">
@@ -108,7 +111,8 @@ export default function OtpCode() {
                   </Link>
                   <h3 className="text-center">OTP Verification</h3>
                   <p className="text-center mb-5">
-                    We sent one time code to your number ending in {maskedNumber}.
+                    We sent one time code to your number ending in{" "}
+                    {maskedNumber}.
                   </p>
                   <form
                     onSubmit={(e) => {
@@ -152,6 +156,14 @@ export default function OtpCode() {
                       </button>
                     </div>
                   </form>
+                  <div className="new-account mt-3 d-flex justify-content-between">
+                    <p>
+                      Didn't receive code?{" "}
+                      <Link className="text-primary" href="/otp-code">
+                        Resend
+                      </Link>
+                    </p>
+                  </div>
                   <div className="info mt-3">
                     <p className="text-muted">
                       You are not recommended to save password to browsers!

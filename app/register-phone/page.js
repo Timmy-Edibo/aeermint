@@ -30,14 +30,14 @@ export default function RegisterPhone() {
 
       if (!response.ok) {
         const errorData = await response.json();
-      
+
         throw new Error(errorData.message || "An unknown error occurred!");
       }
 
       const data = await response.json();
 
-      localStorage?.setItem('signUpPhoneNumber', data?.data?.phoneNumber);
-      localStorage?.setItem('signUpCountry', country);
+      localStorage?.setItem("signUpPhoneNumber", data?.data?.phoneNumber);
+      localStorage?.setItem("signUpCountry", country);
 
       router.push("/otp-code?phoneNumber=" + data?.data?.phoneNumber);
     } catch (error) {
@@ -78,7 +78,11 @@ export default function RegisterPhone() {
                   >
                     <div className="mb-3 col-12">
                       <label className="form-label">Country</label>
-                      <select onChange={(event) => setCountry(event.target.value)} className="form-select" name="country">
+                      <select
+                        onChange={(event) => setCountry(event.target.value)}
+                        className="form-select"
+                        name="country"
+                      >
                         <option value="">Select</option>
                         {countries.map((country) => (
                           <option key={country} value={country}>
@@ -122,6 +126,15 @@ export default function RegisterPhone() {
                       Don't get code?{" "}
                       <Link className="text-primary" href="/otp-code">
                         Resend
+                      </Link>
+                    </p>
+                  </div>
+                  <div className="new-account d-flex justify-content-between">
+                    <p>
+                      Already have an account?
+                      <Link className="text-primary" href="/signin">
+                        {" "}
+                        Sign In
                       </Link>
                     </p>
                   </div>

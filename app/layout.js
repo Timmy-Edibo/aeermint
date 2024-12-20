@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <link rel="icon" href="/images/favicon.png" sizes="16" />
+      <link rel="icon" href="./images/aermint_logo_one.png" sizes="16" />
       <body className={rubik.className}>
         <AuthProvider>{children}</AuthProvider>
       </body>
