@@ -23,9 +23,9 @@ export default function SignUp() {
                 </div>
                 <div className="card">
                   <div className="card-body">
-                    {/* <Link
+                    <Link
                       className="page-back text-muted"
-                      href={`/otp-code?phoneNumber=${localStorage?.getItem(
+                      href={`/signup?phoneNumber=${localStorage?.getItem(
                         "signUpPhoneNumber"
                       )}`}
                     >
@@ -33,10 +33,10 @@ export default function SignUp() {
                         <i className="fi fi-ss-angle-small-left" />
                       </span>{" "}
                       Back
-                    </Link> */}
+                    </Link>
                     <h3 className="text-center">Vendor Verification</h3>
-                    <p className="text-center mb-5">
-                      Is this your business? Verify your business details.
+                    <p className="text-center mb-3">
+                      Verify your business details.
                     </p>
                     <LookupForm />
                   </div>

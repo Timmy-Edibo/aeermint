@@ -38,7 +38,6 @@ export default function OtpCode() {
       }
 
       const data = await response.json();
-      console.log(data);
       router.push(`/signup?phoneNumber=${localStorage?.getItem('signUpPhoneNumber')}`);
     } catch (error) {
       console.error(error.message);

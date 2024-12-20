@@ -37,6 +37,10 @@ const SignUpForm = () => {
     }));
   };
 
+  useEffect(() => {
+    setUserType("regularUser");
+  }, [])
+
   const countryList = getCountries();
 
   const selectUserType = (type) => {
