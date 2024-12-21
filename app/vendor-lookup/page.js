@@ -1,10 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LookupForm from "./LookUpForm";
 import { SignUpProvider } from "@/contexts/SignUpContext";
 export default function SignUp() {
+  const [signUpPhoneNumber, setSignUpPhoneNumber] = useState("");
+
+  useEffect(() => {
+    const phoneNumber = localStorage.getItem("signUpPhoneNumber");
+    if (phoneNumber) {
+      setSignUpPhoneNumber(phoneNumber);
+    }
+  }, []);
   return (
     <>
       <SignUpProvider>
@@ -25,9 +33,7 @@ export default function SignUp() {
                   <div className="card-body">
                     <Link
                       className="page-back text-muted"
-                      href={`/signup?phoneNumber=${localStorage?.getItem(
-                        "signUpPhoneNumber"
-                      )}`}
+                      href={`/signup?phoneNumber=${signUpPhoneNumber}`}
                     >
                       <span>
                         <i className="fi fi-ss-angle-small-left" />
