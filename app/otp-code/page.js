@@ -1,87 +1,109 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useSignUp } from "@/contexts/SignUpContext";
 import { useSearchParams } from "next/navigation";
 import ToastDisplay from "../../components/elements/ToastDisplay";
 import { baseUrl } from "../../utils/constants";
-
+import Loading from "../loading";
 
 export default function OtpCode() {
-  const [verificationCode, setVerificationCode] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]); // Array for OTP inputs
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  // const { formData,  handleSignUp, error, isLoading } =
-  // useSignUp();
+  const inputRefs = useRef([]); // Ref for input focus handling
 
   const param = useSearchParams();
-  const user = param.get('userType');
+  const phoneNumber = param.get("phoneNumber");
+  const maskedNumber =
+    phoneNumber?.slice(0, -3).replace(/\d/g, "x") + phoneNumber?.slice(-3);
 
-  const handleInputChange = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    setVerificationCode(value);
-  }
-
-  useEffect(() => {
-    // console.log('formData:', formData)
-   })
-
-  const handleValidateOtp = async (e) => {
-    e.preventDefault();
-    let url = user === 'regularUser' ? 'user' : 'vendor';
+  // Verify OTP
+  const verifyOtp = async () => {
+    const otpValue = otp.join(""); // Combine OTP digits
     try {
-      const response = await fetch(
-        `${baseUrl}/${url}/auth/validate-otp`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: verificationCode,
-            triggerEvent: "account-creation",
-          }),
-        }
-      );
+      setLoading(true);
+      const response = await fetch(`${baseUrl}/auth/verify-phone`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber: phoneNumber, otp: otpValue }),
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        localStorage.setItem("accessToken", data.data.token);
-        setAuth(true, data.data);
-        router.push("/wallets");
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Invalid OTP. Please try again.");
+        throw new Error(errorData.message || "An unknown error occurred!");
       }
 
-    
-    //   setAuth(true, data.data);
-    //   alert(`Signup successful: Welcome, ${data.firstName}!`);
-    } catch (err) {
-      console.error("Signup error:", err.message);
+      const data = await response.json();
+      router.push(
+        `/signup?phoneNumber=${localStorage?.getItem("signUpPhoneNumber")}`
+      );
+    } catch (error) {
+      console.error(error.message);
+      setError(error.message);
     } finally {
-      // setIsLoading(false);
-      console.log('otp successful')
+      // setLoading(false);
+    }
+  };
+
+  // Prevent paste in OTP inputs
+  const handlePaste = (e) => {
+    e.preventDefault();
+  };
+
+  // Handle OTP input changes
+  const handleOtpChange = (value, index) => {
+    if (/^\d?$/.test(value)) {
+      const updatedOtp = [...otp];
+      updatedOtp[index] = value;
+      setOtp(updatedOtp);
+
+      // Move focus to the next input
+      if (value && index < otp.length - 1) {
+        inputRefs.current[index + 1].focus();
+      }
+    }
+  };
+
+  // Handle backspace and arrow key navigation
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      if (!otp[index] && index > 0) {
+        inputRefs.current[index - 1].focus();
+      }
+      const updatedOtp = [...otp];
+      updatedOtp[index] = ""; // Clear current input
+      setOtp(updatedOtp);
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1].focus();
+    } else if (e.key === "ArrowRight" && index < otp.length - 1) {
+      inputRefs.current[index + 1].focus();
     }
   };
 
   return (
     <>
+      {loading && <Loading />}
       <div className="authincation">
         <div className="container h-100">
           <div className="row justify-content-center h-100 align-items-center">
             <div className="col-xl-5 col-md-6">
               <div className="mini-logo text-center my-5">
                 <Link href="/index">
-                  <img src="./images/logo.png" alt="" />
+                  <img
+                    style={{ width: "20%", justifySelf: "center" }}
+                    src="./images/aermint_logo_one.png"
+                    alt=""
+                  />
                 </Link>
               </div>
               <div className="card">
                 <div className="card-body">
-                  <Link className="page-back text-muted" href="/otp-phone">
+                  <Link className="page-back text-muted" href="/register-phone">
                     <span>
                       <i className="fi fi-ss-angle-small-left" />
                     </span>{" "}
@@ -89,23 +111,43 @@ export default function OtpCode() {
                   </Link>
                   <h3 className="text-center">OTP Verification</h3>
                   <p className="text-center mb-5">
-                    We will send one time code on ending in +xxx xxxxxxxx60.
+                    We sent one time code to your number ending in{" "}
+                    {maskedNumber}.
                   </p>
-                  <form onSubmit={handleValidateOtp}>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      verifyOtp();
+                    }}
+                  >
                     <div className="mb-3  mb-3">
                       <label className="mb-3">Your OTP Code</label>
-                      <div className="input-group">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text">
-                            <i className="fi fi-sr-phone-call" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={verificationCode}
-                          onChange={handleInputChange}
-                          className="form-control"
-                        />
+                      <div
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ gap: "10px", margin: "20px 0" }}
+                      >
+                        {otp?.map((value, index) => (
+                          <input
+                            key={index}
+                            type="text"
+                            value={value}
+                            onChange={(e) =>
+                              handleOtpChange(e.target.value, index)
+                            }
+                            onKeyDown={(e) => handleKeyDown(e, index)}
+                            onPaste={handlePaste}
+                            className="form-control text-center"
+                            maxLength="1"
+                            style={{
+                              height: "50px",
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              border: "1px solid #ccc",
+                              borderRadius: "5px",
+                            }}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                          />
+                        ))}
                       </div>
                     </div>
                     <div className="text-center">
@@ -114,9 +156,17 @@ export default function OtpCode() {
                       </button>
                     </div>
                   </form>
+                  <div className="new-account mt-3 d-flex justify-content-between">
+                    <p>
+                      Didn't receive code?{" "}
+                      <Link className="text-primary" href="/otp-code">
+                        Resend
+                      </Link>
+                    </p>
+                  </div>
                   <div className="info mt-3">
                     <p className="text-muted">
-                      You dont recommended to save password to browsers!
+                      You are not recommended to save password to browsers!
                     </p>
                   </div>
                 </div>
@@ -125,6 +175,15 @@ export default function OtpCode() {
           </div>
         </div>
       </div>
+      {error && (
+        <ToastDisplay
+          title="Error"
+          message={error}
+          type="error"
+          show={error}
+          onClose={() => setError(null)}
+        />
+      )}
     </>
   );
 }

@@ -37,7 +37,6 @@ export default function TransactionDetails() {
       }
 
       const data = await response.json();
-      console.log("Fetched Data:", data);
       setParsedData(data?.data?.transaction);
     } catch (error) {
       console.error("Error fetching transaction details:", error.message);

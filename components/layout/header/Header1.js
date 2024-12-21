@@ -30,7 +30,7 @@ export default function Header1({ isMobileMenu, handleMobileMenu }) {
                 <div className="header-left">
                   <div className="brand-logo">
                     <Link className="mini-logo" href="/">
-                      <img src="./images/logoi.png" alt="" width={40} />
+                      <img src="./images/aermint_logo_one.png" alt="" width={40} />
                     </Link>
                   </div>
                   <div className="search">

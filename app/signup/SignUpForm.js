@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 import { useSignUp } from "@/contexts/SignUpContext";
 import Loading from "../loading";
 import Link from "next/link";
@@ -16,6 +19,16 @@ const SignUpForm = () => {
     setUserType,
   } = useSignUp();
   const [selectedTab, setSelectedTab] = useState("regularUser"); // "regularUser" or "vendorUser"
+  const param = useSearchParams();
+
+  const phoneNumber = param?.get("phoneNumber");
+  const country = localStorage?.getItem("signUpCountry");
+
+  if (phoneNumber) formData.phoneNumber = phoneNumber;
+  if (country) formData.country = country;
+  // useEffect(() => {
+
+  // }, []);
 
   const getCountries = () => {
     return countries.map((country) => ({
@@ -23,6 +36,10 @@ const SignUpForm = () => {
       code: country.cca2,
     }));
   };
+
+  useEffect(() => {
+    setUserType("regularUser");
+  }, [])
 
   const countryList = getCountries();
 
@@ -34,34 +51,16 @@ const SignUpForm = () => {
   return (
     <div className="auth-form">
       {isLoading && <Loading />}
-      <h4>Sign Up</h4>
-      <div className="tab-buttons d-flex justify-content-center mb-4">
-        <button
-          className={`btn ${
-            selectedTab === "regularUser"
-              ? "btn-primary"
-              : "btn-outline-primary"
-          }`}
-          onClick={() => selectUserType("regularUser")}
-          style={{ width: "50%" }}
-        >
-          Regular User
-        </button>
-        <button
-          className={`btn ${
-            selectedTab === "vendorUser" ? "btn-primary" : "btn-outline-primary"
-          }`}
-          onClick={() => selectUserType("vendorUser")}
-          style={{ width: "50%" }}
-        >
-          Vendor
-        </button>
-      </div>
-
       <form onSubmit={handleSignUp}>
-        <div className="row">
-          {/* Regular User Form */}
-          {selectedTab === "regularUser" && (
+        <Tabs
+          defaultActiveKey="regularUser"
+          activeKey={selectedTab}
+          onSelect={(k) => selectUserType(k)}
+          className="mb-3"
+          id="fill-tab-example"
+          fill
+        >
+          <Tab className="font-bold" eventKey="regularUser" title="User">
             <>
               <div className="col-12 mb-3">
                 <label className="form-label">First Name</label>
@@ -86,6 +85,7 @@ const SignUpForm = () => {
               <div className="col-12 mb-3">
                 <label className="form-label">Country</label>
                 <select
+                  disabled
                   name="country"
                   className="form-control"
                   value={formData?.country}
@@ -121,11 +121,19 @@ const SignUpForm = () => {
                   onChange={handleInputChange}
                 />
               </div>
+              <div className="col-12 mb-3">
+                <label className="form-label">Password</label>
+                <input
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  value={formData?.password}
+                  onChange={handleInputChange}
+                />
+              </div>
             </>
-          )}
-
-          {/* Vendor Form */}
-          {selectedTab === "vendorUser" && (
+          </Tab>
+          <Tab eventKey="vendorUser" title="Vendor">
             <div className="col-12 mb-3">
               <label className="form-label">RC Number</label>
               <input
@@ -136,29 +144,20 @@ const SignUpForm = () => {
                 onChange={handleInputChange}
               />
             </div>
-          )}
-
-          {/* Shared Fields */}
-          <div className="col-12 mb-3">
-            <label className="form-label">Phone Number</label>
-            <input
-              name="phoneNumber"
-              type="text"
-              className="form-control"
-              value={formData?.phoneNumber}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="col-12 mb-3">
-            <label className="form-label">Password</label>
-            <input
-              name="password"
-              type="password"
-              className="form-control"
-              value={formData?.password}
-              onChange={handleInputChange}
-            />
-          </div>
+          </Tab>
+        </Tabs>
+        {/* Shared Fields */}
+        <div className="col-12 mb-3">
+          <label className="form-label">Phone Number</label>
+          <input
+            readOnly
+            disabled
+            name="phoneNumber"
+            type="text"
+            className="form-control bg-grey"
+            value={formData?.phoneNumber}
+            onChange={handleInputChange}
+          />
         </div>
 
         {error && <p className="text-danger">{error}</p>}
@@ -173,6 +172,7 @@ const SignUpForm = () => {
           </button>
         </div>
       </form>
+
       <p className="mt-3 mb-0">
         Already have an account?
         <Link className="text-primary" href="/signin">

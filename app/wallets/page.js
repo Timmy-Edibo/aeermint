@@ -52,10 +52,8 @@ export default function Wallets() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.data);
         const user = await data?.data;
         setUser(user);
-        console.log(user);
       } else {
         const errorData = await response.json();
         throw new Error(
@@ -91,7 +89,6 @@ export default function Wallets() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("tx", data);
 
           if (data && data?.data) {
             setCount(data?.data?.meta?.totalCount);
@@ -113,7 +110,7 @@ export default function Wallets() {
       }
     },
     [user, page]
-  ); 
+  );
 
   const handleScroll = (event) => {
     const bottom =
@@ -156,7 +153,7 @@ export default function Wallets() {
       }
     } catch (error) {
       console.error("An error occurred:", error.message);
-      setError(error.message); 
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -185,23 +182,79 @@ export default function Wallets() {
     <>
       <Layout breadcrumbTitle="Wallets">
         {loading && <Loading />}
-
-        {user && user?.account?.interactableType === "USER" && !pinStatus && (
-          <ToastDisplay
-            message={
-              <span>
-                <Link href="/create-pin">Click here to create a pin.</Link>
-              </span>
-            }
-            type="warning"
-          />
-        )}
         <div className="wallet-tab">
+          <div className="col-xxl-6 col-xl-6 col-lg-6">
+            <div className="card">
+              <div className="card-body">
+                <div className="welcome-profile">
+                  <div className="d-flex align-items-center">
+                    <img src="./images/avatar/3.jpg" alt="" />
+                    <div className="ms-3">
+                      {user && user?.account?.interactableType === "USER" ? (
+                        <h4>
+                          Welcome, {user?.firstName} {user?.lastName}!
+                        </h4>
+                      ) : (
+                        <h4>Welcome, {user?.businessName}!</h4>
+                      )}
+                      {user &&
+                      user?.account?.interactableType === "USER" &&
+                      !pinStatus ? (
+                        <p>
+                          Looks like you are not set up a pin yet. Set it up to
+                          use the full potential of Aermint.
+                        </p>
+                      ) : (
+                        <p>
+                          Begin using Aermint for all payments at supported
+                          vendors
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <ul>
+                    <li>
+                      {user && user?.account?.interactableType === "USER" && (
+                        <Link href="/create-pin">
+                          <span
+                            className={
+                              user &&
+                              user?.account?.interactableType === "USER" &&
+                              !pinStatus
+                                ? "not-verified"
+                                : "verified"
+                            }
+                          >
+                            {user &&
+                            user?.account?.interactableType === "USER" &&
+                            !pinStatus ? (
+                              <i className="fi fi-bs-check" />
+                            ) : (
+                              <i className="fi fi-rs-shield-check" />
+                            )}
+                          </span>
+                          Verify Transaction Pin
+                        </Link>
+                      )}
+                    </li>
+                    <li>
+                      <Link href="#">
+                        <span className={"verified"}>
+                          <i className="fi fi-rs-shield-check" />
+                        </span>
+                        Two-factor authentication (2FA)
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="row g-0">
             <div className="col-xl-12">
               {user?.account?.interactableType === "USER" && (
                 <div className="add-card-link">
-                  <h5 className="mb-0">Send Money</h5>
+                  <h5 className="mb-0">Initiate Purchase</h5>
                   <Link href={pinStatus ? "/add-bank" : "#"}>
                     <i className="fi fi-rr-square-plus" />
                   </Link>
@@ -305,15 +358,13 @@ export default function Wallets() {
                                           }
                                           style={{ cursor: "pointer" }}
                                         >
+                                          <td>{transaction?.transactionRef}</td>
                                           <td>
-                                              {transaction?.transactionRef}
+                                            {formatDate(transaction?.createdAt)}
                                           </td>
                                           <td>
-                                            {formatDate(
-                                              transaction?.createdAt
-                                            )}
+                                            {formatTime(transaction?.createdAt)}
                                           </td>
-                                          <td>{formatTime(transaction?.createdAt)}</td>
                                           <td>{transaction?.status}</td>
                                           <td>{transaction?.amount}</td>
                                           <td>{transaction?.currency}</td>
@@ -325,6 +376,18 @@ export default function Wallets() {
                             </div>
                           </div>
                         </div>
+                        {transactionsList?.length <= 0 && (
+                          <div className="card-body height-200 d-flex align-items-center justify-content-center">
+                            <p className="mt-5">
+                              You have no transactions yet! Create one by
+                              hitting the{" "}
+                              <Link href="/" className="text-primary">
+                                Initiate Button
+                              </Link>{" "}
+                              as a regular user.{" "}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

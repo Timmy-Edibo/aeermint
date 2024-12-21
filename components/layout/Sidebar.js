@@ -7,7 +7,7 @@ export default function Sidebar() {
     return (
         <>
             <div className="sidebar">
-                <div className="brand-logo"><Link className="full-logo" href="/"><img src="./images/logoi.png" alt="" width={30} /></Link></div>
+                <div className="brand-logo"><Link className="full-logo" href="/"><img src="./images/aermint_logo_one.png" alt="" width={30} /></Link></div>
                 <div className="menu">
                     <ul>
                         {/* <li className={pathname == "/" ? "active" : ""}>

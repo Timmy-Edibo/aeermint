@@ -36,7 +36,7 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="auth-form">
+    <div className="">
       <h4>Sign In</h4>
       <form onSubmit={handleSubmit}>
         <div className="row">
