@@ -16307,7 +16307,7 @@ figure > img:hover {
 }
 
 .mini-logo a {
-  display: inline-block;
+  /* display: inline-block; */
 }
 
 .privacy-content {

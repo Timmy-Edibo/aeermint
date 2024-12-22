@@ -22,8 +22,8 @@ export default function SignUp() {
         <div className="authincation">
           <div className="container h-100">
             <div className="row justify-content-center h-100 align-items-center">
-              <div className="col-xl-5 col-md-6">
-                <div className="mini-logo text-center my-5">
+              <div className="col-xl-6 col-md-6">
+                <div className="mini-logo justify-content-center my-5">
                   <Link href="/">
                     <img
                       style={{ width: "20%", justifySelf: "center" }}
