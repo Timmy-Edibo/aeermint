@@ -169,7 +169,7 @@ const LookupForm = () => {
             Close
           </Button>
           <Button variant="primary" onClick={confirmVendorSignUp}>
-            Save Changes
+            Confirm Password
           </Button>
         </Modal.Footer>
       </Modal>

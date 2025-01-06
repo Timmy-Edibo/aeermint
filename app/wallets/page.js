@@ -201,14 +201,24 @@ export default function Wallets() {
                       user?.account?.interactableType === "USER" &&
                       !pinStatus ? (
                         <p>
-                          Looks like you are not set up a pin yet. Set it up to
+                          Looks like you haven't set up a pin yet. Set it up to
                           use the full potential of Aermint.
                         </p>
                       ) : (
-                        <p>
-                          Begin using Aermint for all payments at supported
-                          vendors
-                        </p>
+                        <>
+                          {user &&
+                          user?.account?.interactableType === "USER" ? (
+                            <p>
+                              Start using Aermint to make payments to available
+                              vendors.
+                            </p>
+                          ) : (
+                            <p>
+                              Aermint allow you to accept payments from
+                              customers with ease from all locations.
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -233,7 +243,7 @@ export default function Wallets() {
                               <i className="fi fi-rs-shield-check" />
                             )}
                           </span>
-                          Verify Transaction Pin
+                          Create Transaction Pin
                         </Link>
                       )}
                     </li>
@@ -254,7 +264,7 @@ export default function Wallets() {
             <div className="col-xl-12">
               {user?.account?.interactableType === "USER" && (
                 <div className="add-card-link">
-                  <h5 className="mb-0">Initiate Purchase</h5>
+                  <h5 className="mb-0">Create Transaction</h5>
                   <Link href={pinStatus ? "/add-bank" : "#"}>
                     <i className="fi fi-rr-square-plus" />
                   </Link>

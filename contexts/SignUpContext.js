@@ -112,7 +112,7 @@ export const SignUpProvider = ({ children }) => {
         router.push("/wallets");
       }
       // change to toast
-      alert(`Signup successful: Welcome, ${data.firstName || "User"}!`);
+      alert(` Welcome ${data.firstName }!. You have successfully signed up to Aermint as a User.`);
     } catch (err) {
       console.error("Signup error:", err.message);
       setError(err.message || "An unexpected error occurred.");
