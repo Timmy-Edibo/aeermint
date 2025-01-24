@@ -51,7 +51,7 @@ export default function SettingsBank() {
             <SettingsMenu />
             <div className="card">
               <div className="card-header">
-                <h4 className="card-title">Add Bank Account or Card</h4>
+                <h4 className="card-title">Add Bank Account</h4>
               </div>
               <div className="card-body">
                 <div className="verify-content">

@@ -13,6 +13,7 @@ export default function Header1({ isMobileMenu, handleMobileMenu }) {
   const { getCurrentUser, setAuth, signOut } = useAuth();
   const user = getCurrentUser();
   const router = useRouter();
+  console.log("user", user);
 
   const handleLogout = useCallback((e) => {
     e.preventDefault();
@@ -30,7 +31,11 @@ export default function Header1({ isMobileMenu, handleMobileMenu }) {
                 <div className="header-left">
                   <div className="brand-logo">
                     <Link className="mini-logo" href="/">
-                      <img src="./images/aermint_logo_one.png" alt="" width={40} />
+                      <img
+                        src="./images/aermint_logo_one.png"
+                        alt=""
+                        width={40}
+                      />
                     </Link>
                   </div>
                   <div className="search">
@@ -145,7 +150,13 @@ export default function Header1({ isMobileMenu, handleMobileMenu }) {
                             />
                           </span>
                           <div className="user-info">
-                            <h5>{user?.firstName}</h5>
+                            {user?.account?.interactableType === "USER" && (
+                              <h5>{user?.firstName}</h5>
+                            )}
+                            {user?.account?.interactableType === "VENDOR" && (
+                              <h5>{user?.businessName}</h5>
+                            )}
+
                             <span>{user?.account?.interactableType}</span>
                           </div>
                         </div>

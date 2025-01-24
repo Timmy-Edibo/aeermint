@@ -74,6 +74,7 @@ export default function Sidebar() {
                                 <span className="nav-text">Affiliates</span>
                             </Link>
                         </li>
+                        */}
                         <li className={pathname == "/settings" ? "active" : ""}>
                             <Link href="/settings">
                                 <span>
@@ -81,7 +82,7 @@ export default function Sidebar() {
                                 </span>
                                 <span className="nav-text">Settings</span>
                             </Link>
-                        </li> */}
+                        </li> 
                     </ul>
                 </div>
             </div>

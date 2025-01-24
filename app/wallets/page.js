@@ -160,7 +160,7 @@ export default function Wallets() {
     }
   };
 
-  const checkPayoutAccountStatus = async () => {
+  const checkPayoutAccountStatus = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -188,7 +188,7 @@ export default function Wallets() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleRowClick = (transaction) => {
     const uuid = transaction && transaction?.uuid && transaction?.uuid;
@@ -212,7 +212,7 @@ export default function Wallets() {
     fetchData();
   }, []);
 
-  console.log('status', payoutAccountStatus);
+  console.log("status", payoutAccountStatus);
 
   return (
     <>
@@ -268,7 +268,6 @@ export default function Wallets() {
                     </div>
                   </div>
                   <ul>
-
                     <li>
                       {user?.account?.interactableType === "USER" && (
                         <Link href="/create-pin">
