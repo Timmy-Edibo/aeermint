@@ -3,10 +3,50 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import banks from "../../utils/banks";
+import { useAuth } from "../../contexts/AuthContext";
+import { baseUrl } from "../../utils/constants";
+
 export default function AddCard() {
-  const [vendorBank, setVendorBank] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [vendorBank, setVendorBank] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
   const handleBankSelectChange = (event) => setVendorBank(event.target.value);
-  
+  const { getCurrentUser } = useAuth();
+
+  console.log(getCurrentUser());
+
+  const addVendorBankAccount = async () => {
+    try {
+      setLoading(true);
+      const selectedBank = banks.find((bank) => bank.name === vendorBank);
+      const response = await fetch(`${baseUrl}/payout/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({
+          currency: getCurrentUser()?.account?.currency,
+          bankName: vendorBank,
+          code: selectedBank?.code,
+          accountNumber: accountNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+        router.push("/bank-add-successful");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Layout breadcrumbTitle="Add Bank Account">
@@ -19,7 +59,7 @@ export default function AddCard() {
                     <h4 className="card-title">Link a Bank Account</h4>
                   </div>
                   <div className="card-body">
-                    <form action="bank-add-successful">
+                    <form action={addVendorBankAccount}>
                       <div className="row">
                         <div className="mb-3 col-xl-12">
                           <label className="form-label">Bank Name</label>
@@ -30,7 +70,7 @@ export default function AddCard() {
                             onChange={handleBankSelectChange}
                           >
                             <option value="">Select a bank</option>
-                            {banks.map((bank) => (
+                            {banks?.map((bank) => (
                               <option value={bank.name} key={bank.slug}>
                                 {bank?.name}
                               </option>
@@ -40,6 +80,8 @@ export default function AddCard() {
                         <div className="mb-3 col-xl-12">
                           <label className="form-label">Account number </label>
                           <input
+                            value={accountNumber}
+                            onChange={(e) => setAccountNumber(e.target.value)}
                             type="text"
                             className="form-control"
                             placeholder="22383919201"

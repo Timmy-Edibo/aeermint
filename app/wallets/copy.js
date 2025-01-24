@@ -232,48 +232,36 @@ export default function Wallets() {
                         <h4>Welcome, {user?.businessName}!</h4>
                       )}
                       {user &&
-                        user?.account?.interactableType === "USER" &&
-                        !pinStatus && (
-                          <p>
-                            Looks like you are not set up a pin yet. Set it up
-                            to use the full potential of Aermint.
-                          </p>
-                        )}
-                      {user &&
-                        user?.account?.interactableType === "USER" &&
-                        pinStatus && (
-                          <p>
-                            Begin using Aermint for all payments at supported
-                            vendors
-                          </p>
-                        )}
-                      {user &&
-                        user?.account?.interactableType === "VENDOR" &&
-                        Object.keys(user?.payoutAccount)?.length <= 0 && (
-                          <p>
-                            Set up your primary account for payouts to begin
-                            receiving payments on Aermint
-                          </p>
-                        )}
-                      {user &&
-                        user?.account?.interactableType === "VENDOR" &&
-                        Object.keys(user?.payoutAccount)?.length > 0 && (
-                          <p>
-                            Payments via Aermint has been enabled for your
-                            customers
-                          </p>
-                        )}
+                      user?.account?.interactableType === "USER" &&
+                      !pinStatus ? (
+                        <p>
+                          Looks like you are not set up a pin yet. Set it up to
+                          use the full potential of Aermint.
+                        </p>
+                      ) : (
+                        <p>
+                          Begin using Aermint for all payments at supported
+                          vendors
+                        </p>
+                      )}
                     </div>
                   </div>
                   <ul>
-
                     <li>
-                      {user?.account?.interactableType === "USER" && (
+                      {user && user?.account?.interactableType === "USER" && (
                         <Link href="/create-pin">
                           <span
-                            className={!pinStatus ? "not-verified" : "verified"}
+                            className={
+                              user &&
+                              user?.account?.interactableType === "USER" &&
+                              !pinStatus
+                                ? "not-verified"
+                                : "verified"
+                            }
                           >
-                            {!pinStatus ? (
+                            {user &&
+                            user?.account?.interactableType === "USER" &&
+                            !pinStatus ? (
                               <i className="fi fi-bs-check" />
                             ) : (
                               <i className="fi fi-rs-shield-check" />
@@ -282,15 +270,20 @@ export default function Wallets() {
                           Verify Transaction Pin
                         </Link>
                       )}
-
-                      {user?.account?.interactableType === "VENDOR" && (
+                      {user && user?.account?.interactableType === "VENDOR" && (
                         <Link href="/add-vendor-bank-account">
                           <span
                             className={
-                              !payoutAccountStatus ? "not-verified" : "verified"
+                              user &&
+                              user?.account?.interactableType === "VENDOR" &&
+                              Object.keys(user?.payoutAccount)?.length <= 0
+                                ? "not-verified"
+                                : "verified"
                             }
                           >
-                            {!payoutAccountStatus ? (
+                            {user &&
+                            user?.account?.interactableType === "VENDOR" &&
+                            Object.keys(user?.payoutAccount)?.length <= 0 ? (
                               <i className="fi fi-bs-check" />
                             ) : (
                               <i className="fi fi-rs-shield-check" />
@@ -300,7 +293,30 @@ export default function Wallets() {
                         </Link>
                       )}
                     </li>
-
+                    <li>
+                      {user && user?.account?.interactableType === "VENDOR" && (
+                        <Link href="/add-payout-account">
+                          <span
+                            className={
+                              user &&
+                              user?.account?.interactableType === "VENDOR" &&
+                              !payoutAccountStatus
+                                ? "not-verified"
+                                : "verified"
+                            }
+                          >
+                            {user &&
+                            user?.account?.interactableType === "VENDOR" &&
+                            !payoutAccountStatus ? (
+                              <i className="fi fi-bs-check" />
+                            ) : (
+                              <i className="fi fi-rs-shield-check" />
+                            )}
+                          </span>
+                          Verify Payout Account
+                        </Link>
+                      )}
+                    </li>
                     <li>
                       <Link href="#">
                         <span className={"verified"}>
