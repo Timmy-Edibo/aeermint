@@ -178,7 +178,7 @@ export default function Wallets() {
       console.log("i am here", data);
 
       if (response.ok) {
-        if (data?.data?.hasPayoutAccount) {
+        if (data?.data?.hasPayOutAccount) {
           setPayoutAccountStatus(true);
         }
       }
@@ -211,6 +211,8 @@ export default function Wallets() {
     };
     fetchData();
   }, []);
+
+  console.log('status', payoutAccountStatus);
 
   return (
     <>
