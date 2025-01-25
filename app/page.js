@@ -30,7 +30,6 @@ export default function Home() {
     if (user) {
       const parsedUser = JSON.parse(user);
       setUser(parsedUser);
-      console.log("User:", parsedUser.firstName); // Log user's first name
     } else {
       console.log("No current user found.");
     }

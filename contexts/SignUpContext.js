@@ -50,8 +50,6 @@ export const SignUpProvider = ({ children }) => {
         rcNumber,
       } = formData;
 
-      console.log("Signup form data:", formData);
-
       // Define the API endpoint based on the user type
       let url = "";
       if (userType === "regularUser") {
@@ -81,8 +79,6 @@ export const SignUpProvider = ({ children }) => {
           rcNumber,
         };
       }
-
-      console.log("Signup payload:", payload);
 
       // Make the API request
       const response = await fetch(`${baseUrl}/${url}`, {

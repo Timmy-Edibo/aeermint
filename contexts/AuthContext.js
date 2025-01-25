@@ -77,7 +77,6 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       localStorage.setItem("accessToken", data.data.token);
       setAuth(true, data.data);
-      console.log(data.data);
       router.push("/wallets"); // Redirect to home page
       console.log("login successful");
     } catch (err) {
