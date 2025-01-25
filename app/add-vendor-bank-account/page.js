@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import ToastDisplay from "../../components/elements/ToastDisplay";
 import Layout from "@/components/layout/Layout";
 import banks from "../../utils/banks";
 import { useAuth } from "../../contexts/AuthContext";
@@ -8,10 +10,12 @@ import { baseUrl } from "../../utils/constants";
 
 export default function AddCard() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [vendorBank, setVendorBank] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const handleBankSelectChange = (event) => setVendorBank(event.target.value);
   const { getCurrentUser } = useAuth();
+  const router = useRouter();
 
   console.log(getCurrentUser());
 
@@ -104,6 +108,15 @@ export default function AddCard() {
           </div>
         </div>
       </Layout>
+      {error && (
+        <ToastDisplay
+          title="Error"
+          message={error}
+          type="error"
+          show={error}
+          onClose={() => setError(null)}
+        />
+      )}
     </>
   );
 }
