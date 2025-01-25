@@ -50,7 +50,6 @@ export default function AddBank() {
 
   const createTransactionPin = async () => {
     try {
-      console.log(getCurrentUser());
       setLoading(true);
       const pinCode = pinData?.join("");
 

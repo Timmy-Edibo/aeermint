@@ -175,7 +175,6 @@ export default function Wallets() {
       );
 
       const data = await response.json();
-      console.log("i am here", data);
 
       if (response.ok) {
         if (data?.data?.hasPayOutAccount) {
@@ -211,8 +210,6 @@ export default function Wallets() {
     };
     fetchData();
   }, []);
-
-  console.log("status", payoutAccountStatus);
 
   return (
     <>

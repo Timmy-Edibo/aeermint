@@ -45,10 +45,8 @@ export default function Ledger() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.data);
         const user = await data?.data;
         setUser(user);
-        console.log(user);
       } else {
         const errorData = await response.json();
         throw new Error(
@@ -94,8 +92,6 @@ export default function Ledger() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("tx", data.data);
-
           // Ensure that `data.data` is an array before appending
           if (data && data?.data) {
             setCount(data?.data?.meta?.totalCount);

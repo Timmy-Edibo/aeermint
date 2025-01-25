@@ -17,8 +17,6 @@ export default function AddCard() {
   const { getCurrentUser } = useAuth();
   const router = useRouter();
 
-  console.log(getCurrentUser());
-
   const addVendorBankAccount = async () => {
     try {
       setLoading(true);
@@ -40,7 +38,6 @@ export default function AddCard() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log(data);
         router.push("/bank-add-successful");
       }
     } catch (error) {

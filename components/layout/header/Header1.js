@@ -13,7 +13,6 @@ export default function Header1({ isMobileMenu, handleMobileMenu }) {
   const { getCurrentUser, setAuth, signOut } = useAuth();
   const user = getCurrentUser();
   const router = useRouter();
-  console.log("user", user);
 
   const handleLogout = useCallback((e) => {
     e.preventDefault();

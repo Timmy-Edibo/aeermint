@@ -11,8 +11,6 @@ export default function SettingsBank() {
   const [vendorBank, setVendorBank] = useState(null);
   const { getCurrentUser } = useAuth();
 
-  console.log(getCurrentUser());
-
   const fetchVendorBanks = async () => {
     try {
       setLoading(true);
@@ -27,9 +25,7 @@ export default function SettingsBank() {
       const data = await response.json();
 
       if (response.ok) {
-        // console.log(data?.data);
         setVendorBank(data?.data);
-        console.log(data?.data);
       }
     } catch (error) {
       console.error("An error occurred:", error.message);
